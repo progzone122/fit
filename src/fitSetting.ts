@@ -13,6 +13,7 @@ export default class FitSettingTab extends PluginSettingTab {
 	patSetting: Setting
 	ownerSetting: Setting
 	repoSetting: Setting
+	repoSettingManually: Setting
 	branchSetting: Setting
 	existingRepos: Array<string>;
 	existingBranches: Array<string>;
@@ -165,6 +166,18 @@ export default class FitSettingTab extends PluginSettingTab {
 					}
 				})
 			})
+
+		this.repoSettingManually = new Setting(containerEl)
+			.setName('Github repository name (Manually)')
+			.setDesc("Manually select a repo by name to sync your vault. Use only if dropdown is not working correctly for some reason")
+			.addText(text => text
+				.setPlaceholder('Repository name')
+				.setValue(this.plugin.settings.repo)
+				.onChange(async (value) => {
+					this.plugin.settings.repo = value;
+					await this.plugin.saveSettings();
+					await this.refreshFields('branch(1)');
+				}));
 
 		this.branchSetting = new Setting(containerEl)
 			.setName('Branch name')
